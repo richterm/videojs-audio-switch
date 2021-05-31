@@ -1,0 +1,1 @@
+# videojs-audio-switch plugin

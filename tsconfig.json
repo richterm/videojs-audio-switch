@@ -1,0 +1,15 @@
+{
+    "compilerOptions": {
+        "module": "ESNext",
+        "target": "es2020",
+        "jsx": "preserve",
+        "strictFunctionTypes": true,
+        "sourceMap": true,
+        "allowSyntheticDefaultImports": true,
+        "moduleResolution": "node"
+    },
+    "exclude": [
+        "node_modules",
+        "**/node_modules/*"
+    ]
+}
