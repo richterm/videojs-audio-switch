@@ -31,7 +31,9 @@ export function audioSwitchPlugin(options: AudioSwitchOptions) {
     if (enabledTrack) {
       const isPlaying = !player.paused();
       if (isPlaying) player.pause();
-      audio.src = audioTracks[enabledTrack.language];
+      audio.src = audioTracks.find(
+        (audioTrack) => audioTrack.language === enabledTrack.language
+      )?.url;
       syncTime(player, audio);
       if (isPlaying) player.play();
     }
@@ -44,23 +46,10 @@ export function audioSwitchPlugin(options: AudioSwitchOptions) {
     onAudioTracksChange.bind(null, player, audio)
   );
 
-  const trackEntries = Object.entries(audioTracks);
+  audioTracks.forEach((track) => audioTrackList.addTrack(track));
 
-  const tracks = trackEntries.map(([key, val]) => {
-    return {
-      id: key,
-      kind: key as videojs.AudioTrack.Kind,
-      label: key.toUpperCase(),
-      language: key,
-    };
-  });
-
-  tracks.forEach((track) =>
-    audioTrackList.addTrack(new videojs.AudioTrack(track))
-  );
-
-  if (tracks.length > 0) {
-    audio.src = audioTracks[tracks[0].id];
+  if (audioTracks.length > 0) {
+    audio.src = audioTracks[0].url;
   }
 
   player.on("play", () => {
