@@ -1,5 +1,5 @@
 import type { AudioSwitchOptions } from "../types";
-import { throttle } from "lodash-es";
+import throttle from "lodash-es/throttle";
 import videojs from "video.js";
 
 const syncTime = (player, audio) => {

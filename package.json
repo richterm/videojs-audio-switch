@@ -1,11 +1,15 @@
 {
   "name": "videojs-plugin-audio-switch",
-  "version": "0.0.1",
+  "version": "0.1.1",
   "main": "dist/videojs-plugin-audio-switch.js",
   "keywords": [
     "videojs",
     "videojs-plugin"
   ],
+  "repository": {
+    "url": "https://github.com/richterm/videojs-audio-switch.git",
+    "type": "git"
+  },
   "license": "MIT",
   "dependencies": {
     "lodash-es": "^4.17.21",
