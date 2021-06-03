@@ -3,7 +3,7 @@ import typescript from "@rollup/plugin-typescript";
 export default {
   input: "src/index.ts",
   output: {
-    file: "dist/videojs-audio-switch.js",
+    file: "dist/videojs-plugin-audio-switch.js",
     format: "umd",
     globals: {
       "video.js": "videojs",

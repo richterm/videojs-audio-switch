@@ -1,7 +1,11 @@
 {
   "name": "videojs-plugin-audio-switch",
-  "version": "1.0.0",
-  "main": "index.js",
+  "version": "0.0.1",
+  "main": "dist/videojs-plugin-audio-switch.js",
+  "keywords": [
+    "videojs",
+    "videojs-plugin"
+  ],
   "license": "MIT",
   "dependencies": {
     "lodash-es": "^4.17.21",
