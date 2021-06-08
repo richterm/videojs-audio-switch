@@ -22,15 +22,17 @@ You add those for the languages/ translations you want via the plugin config on 
             label: "Deutsch",
             kind: "translation",
             id: "de",
-            enabled: true,
             url: "your_audio_file.mp3",
           },
         ],
-        // debug: false
+        debugInterval: 10000,
+        // syncInterval: 10000
       },
     },
   });
 </script>
 ```
 
-You might, for debugging purposes, provide `debug: true` above. What that does, is, that every three seconds when the audio and video are being re-synced, a console message is being logged informing you about the difference (because there is always a tiny one) between the two streams.
+You might, for debugging purposes, provide `debugInterval` with a number (milliseconds). What that does, is, that every n milliseconds the difference between audio and video track are being console.logged.
+
+The `syncInterval` lets you force a audio-video sync in a interval of the given milliseconds.

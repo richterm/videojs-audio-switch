@@ -8,7 +8,7 @@ const syncTime = (player, audio) => {
 };
 
 export function audioSwitchPlugin(options: AudioSwitchOptions) {
-  const { audioTracks, debug = false } = options;
+  const { audioTracks, debugInterval, syncInterval } = options;
   const player = this;
 
   const audio = new Audio();
@@ -46,22 +46,29 @@ export function audioSwitchPlugin(options: AudioSwitchOptions) {
     onAudioTracksChange.bind(null, player, audio)
   );
 
-  audioTracks.forEach((track) => audioTrackList.addTrack(track));
-
   if (audioTracks.length > 0) {
+    audioTracks.forEach((track) => audioTrackList.addTrack(track));
     audio.src = audioTracks[0].url;
   }
 
   player.on("play", () => {
     syncTime(player, audio);
-    audio.play();
+    if (audio.paused) audio.play();
   });
   player.on("pause", () => {
     syncTime(player, audio);
-    audio.pause();
+    if (!audio.paused) audio.pause();
   });
   player.on("seeked", () => {
-    syncTime(player, audio);
+    if (!player.paused()) player.pause();
+    player.one("canplay", () => {
+      const sync = () => {
+        syncTime(player, audio);
+        audio.removeEventListener("canplay", sync);
+        if (player.paused()) player.play();
+      };
+      audio.addEventListener("canplay", sync);
+    });
   });
   player.on("volumechange", () => {
     if (player.muted()) {
@@ -72,18 +79,23 @@ export function audioSwitchPlugin(options: AudioSwitchOptions) {
     }
   });
 
-  const onTimeUpdate = throttle(() => {
-    const _audioBefore = audio.currentTime;
-    const _videoBefore = player.currentTime();
-    if (debug) {
-      console.log("onTimeUpdate before:", {
+  if (syncInterval) {
+    const syncOnInterval = throttle(() => {
+      syncTime(player, audio);
+    }, syncInterval);
+    player.on("timeupdate", syncOnInterval);
+  }
+
+  if (debugInterval) {
+    const debugOnInterval = throttle(() => {
+      const _audioBefore = audio.currentTime;
+      const _videoBefore = player.currentTime();
+      console.log("debug", {
         audio: _audioBefore,
         video: _videoBefore,
         diff: _videoBefore - _audioBefore,
       });
-    }
-    syncTime(player, audio);
-  }, 3000);
-
-  player.on("timeupdate", onTimeUpdate);
+    }, debugInterval);
+    player.on("timeupdate", debugOnInterval);
+  }
 }
