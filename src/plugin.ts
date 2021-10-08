@@ -8,10 +8,12 @@ const syncTime = (player, audio) => {
 };
 
 export function audioSwitchPlugin(options: AudioSwitchOptions) {
-  const { audioTracks, debugInterval, syncInterval } = options;
+  const { audioTracks : audioTracksFromOptions, debugInterval, syncInterval } = options;
   const player = this;
 
-  const audio = new Audio();
+  const firstPluginCall = this.audioPlayer === undefined;
+  const audio = this.audioPlayer || new Audio();
+  this.audioPlayer = audio;
   audio.currentTime = 0;
 
   const onAudioTracksChange = (player, audio) => {
@@ -31,7 +33,7 @@ export function audioSwitchPlugin(options: AudioSwitchOptions) {
     if (enabledTrack) {
       const isPlaying = !player.paused();
       if (isPlaying) player.pause();
-      audio.src = audioTracks.find(
+      audio.src = audioTracksFromOptions.find(
         (audioTrack) => audioTrack.language === enabledTrack.language
       )?.url;
       syncTime(player, audio);
@@ -41,15 +43,17 @@ export function audioSwitchPlugin(options: AudioSwitchOptions) {
 
   var audioTrackList = player.audioTracks();
 
+  if (audioTracksFromOptions.length > 0) {
+    [...audioTrackList.tracks_].forEach(it => audioTrackList.removeTrack(it));
+    audioTracksFromOptions.forEach((track) => audioTrackList.addTrack(track));
+    audio.src = audioTracksFromOptions[0].url;
+  }
+
+  if (!firstPluginCall) return;
   audioTrackList.addEventListener(
     "change",
     onAudioTracksChange.bind(null, player, audio)
   );
-
-  if (audioTracks.length > 0) {
-    audioTracks.forEach((track) => audioTrackList.addTrack(track));
-    audio.src = audioTracks[0].url;
-  }
 
   player.on("play", () => {
     syncTime(player, audio);

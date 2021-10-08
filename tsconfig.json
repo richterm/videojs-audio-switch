@@ -6,7 +6,8 @@
         "strictFunctionTypes": true,
         "sourceMap": true,
         "allowSyntheticDefaultImports": true,
-        "moduleResolution": "node"
+        "moduleResolution": "node",
+        "lib": ["dom", "es6"]
     },
     "exclude": [
         "node_modules",
